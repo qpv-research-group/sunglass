@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "GUI for easily use Solcore"
 authors = ["Diego Alonso Álvarez <d.alonso-alvarez@imperial.ac.uk>"]
 license = "GPL-3.0-or-later"
+readme = "README.md"
+repository = "https://github.com/ImperialCollegeLondon/sunglass"
 
 [tool.poetry.dependencies]
 python = "^3.9"
