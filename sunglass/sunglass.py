@@ -38,7 +38,7 @@ class Sunglass(tk.Tk):
         self.protocol(
             "WM_DELETE_WINDOW", self.__quit
         )  # Used to force a "safe closing" of the program
-        self.resizable(False, False)
+        # self.resizable(False, False)
         self.option_add("*tearOff", False)  # Prevents tearing the menus
 
         # We create the global variables
@@ -99,10 +99,10 @@ class Sunglass(tk.Tk):
         self.output = LogTab(self.book)
         self.spectrum = SpectrumTab(self.book)
 
-        # self.book.add(self.spectrum, text='Spectrum')
-        self.book.add(self.solar_cells, text="Solar Cells")
-        # self.book.add(self.materials, text='Materials')
-        self.book.add(self.output, text="Log")
+        # self.book.add(self.spectrum, text='Spectrum', sticky=tk.NSEW)
+        self.book.add(self.solar_cells, text="Solar Cells", sticky=tk.NSEW)
+        # self.book.add(self.materials, text='Materials', sticky=tk.NSEW)
+        self.book.add(self.output, text="Log", sticky=tk.NSEW)
 
         sys.stdout = TextRedirector(self.output.text, "stdout")
         sys.stderr = TextRedirector(self.output.text, "stderr")
