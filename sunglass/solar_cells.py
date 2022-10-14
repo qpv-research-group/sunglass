@@ -26,6 +26,9 @@ class SolarCellsTab(ttk.Frame):
         super(SolarCellsTab, self).__init__(parent)
 
         self.master = master
+        self.rowconfigure(98, weight=1)
+        self.rowconfigure(100, weight=1)
+        self.columnconfigure(2, weight=1)
 
         self.create_buttons()
         self.create_solar_cell_list()
@@ -34,8 +37,8 @@ class SolarCellsTab(ttk.Frame):
         self.create_solar_cell_properties_frame()
         self.create_output_frame()
 
-        # The following dictionary contains all the information related to the simulation, except material properties
-        # taken as the default values.
+        # The following dictionary contains all the information related to the
+        # simulation, except material properties taken as the default values.
         self.model = {
             "Global": {"T": 298},
             "Electrical": {},
@@ -63,9 +66,9 @@ class SolarCellsTab(ttk.Frame):
         )
         self.solar_cell_list.configure(yscrollcommand=solar_list_scroll.set)
         self.solar_cell_list.grid(
-            column=2, row=0, columnspan=3, rowspan=99, sticky=tk.NSEW
+            column=2, row=0, columnspan=3, rowspan=99, sticky=tk.NSEW, padx=5, pady=5
         )
-        solar_list_scroll.grid(column=1, row=0, sticky=tk.NS)
+        solar_list_scroll.grid(column=1, row=0, sticky=tk.NSEW)
 
         # To un-select items an item that was selected
         self.solar_cell_list.bind("<Button-1>", self.unselect_item)
@@ -106,7 +109,7 @@ class SolarCellsTab(ttk.Frame):
         """
         # Buttons for loading and saving data
         loadsave_frame = ttk.LabelFrame(self, text="Load/Save model")
-        loadsave_frame.grid(column=0, row=0, sticky=tk.NSEW)
+        loadsave_frame.grid(column=0, row=0, sticky=tk.NSEW, padx=5, pady=5)
         loadsave_frame.columnconfigure(0, weight=1)
 
         save = ttk.Button(loadsave_frame, text="Save", command=self.save_model)
@@ -118,7 +121,7 @@ class SolarCellsTab(ttk.Frame):
 
         # Buttons for adding the structure
         structure_frame = ttk.LabelFrame(self, text="Structure")
-        structure_frame.grid(column=0, row=1, sticky=tk.NSEW)
+        structure_frame.grid(column=0, row=1, sticky=tk.NSEW, padx=5, pady=5)
 
         layer = ttk.Button(
             structure_frame, text="Add layer", width=15, command=self.add_layer
@@ -139,7 +142,7 @@ class SolarCellsTab(ttk.Frame):
 
         # Buttons for setting the conditions
         settings_frame = ttk.LabelFrame(self, text="Settings")
-        settings_frame.grid(column=0, row=2, sticky=(tk.NSEW))
+        settings_frame.grid(column=0, row=2, sticky=tk.NSEW, padx=5, pady=5)
         settings_frame.columnconfigure(0, weight=1)
 
         glob = ttk.Button(
@@ -163,7 +166,7 @@ class SolarCellsTab(ttk.Frame):
 
         # Buttons for running the solver
         running_frame = ttk.LabelFrame(self, text="Run")
-        running_frame.grid(column=0, row=3, sticky=(tk.NSEW))
+        running_frame.grid(column=0, row=3, sticky=tk.NSEW, padx=5, pady=5)
         running_frame.columnconfigure(0, weight=1)
 
         self.run_var = tk.IntVar(value=2)
@@ -332,9 +335,11 @@ class SolarCellsTab(ttk.Frame):
         if self.model["Solar cell"][element_id]["type"] == "Layer":
             # We are editing the properties of a layer
             widget = self.properties_list
+            callback = self.confirm_changes_to_layer
         else:
             # We are editing the properties of a junction
             widget = self.junction_properties_list
+            callback = self.confirm_changes_to_junction
 
         item_id = widget.focus()
         text = widget.item(item_id, "text")
@@ -350,8 +355,12 @@ class SolarCellsTab(ttk.Frame):
             widget.item(item_id, tags=("modified"))
             self.model["Solar cell"][element_id]["options"][text] = float(w.value)
 
+        callback()
+
     def create_solar_cell_properties_frame(self, *args):
-        """Creates the frame that contain the general solar cell properties, like name, substrate, front relfection...
+        """Creates the frame that contain the general solar cell properties
+
+        Such as name, substrate, front relfection...
 
         :param args:
         :return:
@@ -359,7 +368,9 @@ class SolarCellsTab(ttk.Frame):
         self.sc_properties_frame = ttk.LabelFrame(
             self, text="Solar cell properties", width=380
         )
-        self.sc_properties_frame.grid(column=10, row=0, rowspan=30, sticky=tk.NSEW)
+        self.sc_properties_frame.grid(
+            column=10, row=0, rowspan=99, sticky=tk.NSEW, padx=5, pady=5
+        )
         self.sc_properties_frame.columnconfigure(1, weight=1)
         self.sc_properties_frame.grid_propagate(0)
 
@@ -507,7 +518,7 @@ class SolarCellsTab(ttk.Frame):
             self, text="Junction properties", width=380
         )
         self.junction_properties_frame.grid(
-            column=10, row=0, rowspan=30, sticky=tk.NSEW
+            column=10, row=0, rowspan=99, sticky=tk.NSEW, padx=5, pady=5
         )
         self.junction_properties_frame.columnconfigure(1, weight=1)
         self.junction_properties_frame.grid_propagate(0)
@@ -560,13 +571,6 @@ class SolarCellsTab(ttk.Frame):
 
         # When selecting an item, we update the properties frame
         self.junction_properties_list.bind("<Double-Button-1>", self.properties_popup)
-
-        confirm = ttk.Button(
-            self.junction_properties_frame,
-            text="Confirm changes to junction",
-            command=self.confirm_changes_to_junction,
-        )
-        confirm.grid(column=0, row=99, columnspan=2, sticky=tk.NSEW)
 
     def update_junction_properties_list(self, *args):
         """
@@ -642,7 +646,9 @@ class SolarCellsTab(ttk.Frame):
         self.layer_properties_frame = ttk.LabelFrame(
             self, text="Layer properties", width=380
         )
-        self.layer_properties_frame.grid(column=10, row=0, rowspan=30, sticky=tk.NSEW)
+        self.layer_properties_frame.grid(
+            column=10, row=0, rowspan=99, sticky=tk.NSEW, padx=5, pady=5
+        )
         self.layer_properties_frame.columnconfigure(1, weight=1)
         self.layer_properties_frame.rowconfigure(4, weight=1)
         self.layer_properties_frame.grid_propagate(0)
@@ -704,12 +710,12 @@ class SolarCellsTab(ttk.Frame):
         # When selecting an item, we update the properties frame
         self.properties_list.bind("<Double-Button-1>", self.properties_popup)
 
-        confirm = ttk.Button(
-            self.layer_properties_frame,
-            text="Confirm changes to layer",
-            command=self.confirm_changes_to_layer,
-        )
-        confirm.grid(column=0, row=99, columnspan=2, sticky=tk.NSEW)
+        # confirm = ttk.Button(
+        #     self.layer_properties_frame,
+        #     text="Confirm changes to layer",
+        #     command=self.confirm_changes_to_layer,
+        # )
+        # confirm.grid(column=0, row=99, columnspan=2, sticky=tk.NSEW)
 
     def show_properties_frame(self, *args):
         """
@@ -1149,7 +1155,7 @@ class SolarCellsTab(ttk.Frame):
 
         # Frame containing buttons controlling the output and a few buttons
         out_frame = ttk.LabelFrame(self, text="Plot actions")
-        out_frame.grid(column=0, row=100, rowspan=99, sticky=tk.NSEW)
+        out_frame.grid(column=0, row=100, rowspan=99, sticky=tk.NSEW, padx=5, pady=5)
         out_frame.columnconfigure(0, weight=1)
 
         choose_directory_button = ttk.Button(
@@ -1168,7 +1174,7 @@ class SolarCellsTab(ttk.Frame):
         )
         self.figures_list.configure(yscrollcommand=figures_list_scroll.set)
         self.figures_list.grid(
-            column=2, row=100, columnspan=3, rowspan=99, sticky=tk.NSEW
+            column=2, row=100, columnspan=3, rowspan=99, sticky=tk.NSEW, padx=5, pady=5
         )
         figures_list_scroll.grid(column=1, row=100, sticky=tk.NS)
 
@@ -1184,7 +1190,9 @@ class SolarCellsTab(ttk.Frame):
 
         # And a list containing the calculated parameters, if any
         self.plot_outputs_list = ttk.Treeview(self)
-        self.plot_outputs_list.grid(column=10, row=100, columnspan=2, sticky=(tk.NSEW))
+        self.plot_outputs_list.grid(
+            column=10, row=100, columnspan=2, sticky=tk.NSEW, padx=5, pady=5
+        )
 
         self.plot_outputs_list["columns"] = ("value", "units")
         self.plot_outputs_list.heading("#0", text="Variable", anchor="w")

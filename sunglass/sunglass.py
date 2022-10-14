@@ -52,10 +52,11 @@ class Sunglass(tk.Tk):
             except UnicodeDecodeError:
                 print("Caught Scroll Error")
 
-    def __quit(self):
-        """Quit the program
+    def __quit(self) -> None:
+        """Quit the program in a safe way
 
-        :return: None
+        Return:
+            None
         """
         self.closed = True
 
