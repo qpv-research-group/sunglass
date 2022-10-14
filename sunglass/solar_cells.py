@@ -1,24 +1,18 @@
+import copy
+import glob
+import os
+import time
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, ttk
 
-import yaml, os, copy, glob, time
-
-import numpy as np
-import pandas as pd
-from collections import OrderedDict
 import matplotlib.pyplot as plt
-
 import solcore
-from solcore import material
-from solcore.solar_cell import SolarCell
-from solcore.structure import Layer, Junction, TunnelJunction
-from solcore.solar_cell_solver import solar_cell_solver
+import yaml
 
-from .properties_and_settings import *
+from . import properties_and_settings as ps
+from .plot import BandstructurePlot, IVPlot, QEPlot, load_plot, save_plot
 from .run_calculation import run_solar_cell_model
 from .save_data import save_bandstructure_data, save_iv_data, save_qe_data
-from .plot import BandstructurePlot, IVPlot, QEPlot, save_plot, load_plot
 
 
 class SolarCellsTab(ttk.Frame):
@@ -324,7 +318,7 @@ class SolarCellsTab(ttk.Frame):
 
         :return:
         """
-        w = SettingsWindow(self.master, settings, self.model)
+        w = ps.SettingsWindow(self.master, settings, self.model)
         w.grab_set()
         self.master.wait_window(w)
 
@@ -347,7 +341,7 @@ class SolarCellsTab(ttk.Frame):
         value = widget.set(item_id, "value")
         units = widget.set(item_id, "units")
 
-        w = popupWindow(self.master, "New value for: " + text, value, units)
+        w = ps.popupWindow(self.master, "New value for: " + text, value, units)
         w.grab_set()
         self.master.wait_window(w)
 
@@ -529,7 +523,7 @@ class SolarCellsTab(ttk.Frame):
         junction_name.grid(column=1, row=0, sticky=tk.NSEW)
 
         # Type of junction
-        keys = [k for k in properties_junctions.keys()]
+        keys = [k for k in ps.properties_junctions.keys()]
         ttk.Label(self.junction_properties_frame, text="Type:").grid(
             column=0, row=1, sticky=(tk.NSEW)
         )
@@ -601,14 +595,14 @@ class SolarCellsTab(ttk.Frame):
                     "",
                     "end",
                     text=key,
-                    values=(format(prop, ".4"), units[key]),
+                    values=(format(prop, ".4"), ps.units[key]),
                     tags=("modified"),
                 )
             except:
-                prop = default_junction_properties[key] / conversion[key]
+                prop = ps.default_junction_properties[key] / ps.conversion[key]
 
                 self.junction_properties_list.insert(
-                    "", "end", text=key, values=(format(prop, ".4"), units[key])
+                    "", "end", text=key, values=(format(prop, ".4"), ps.units[key])
                 )
 
     def confirm_changes_to_junction(self, *args):
@@ -766,14 +760,14 @@ class SolarCellsTab(ttk.Frame):
                     "",
                     "end",
                     text=key,
-                    values=(format(prop, ".4"), units[key]),
+                    values=(format(prop, ".4"), ps.units[key]),
                     tags=("modified"),
                 )
             except:
-                prop = default_junction_properties[key] / conversion[key]
+                prop = ps.default_junction_properties[key] / ps.conversion[key]
 
                 self.junction_properties_list.insert(
-                    "", "end", text=key, values=(format(prop, ".4"), units[key])
+                    "", "end", text=key, values=(format(prop, ".4"), ps.units[key])
                 )
 
     def show_layer_properties_frame(self, item_id):
@@ -851,30 +845,33 @@ class SolarCellsTab(ttk.Frame):
                     "",
                     "end",
                     text=key,
-                    values=(format(prop, ".4"), units[key]),
+                    values=(format(prop, ".4"), ps.units[key]),
                     tags=("modified"),
                 )
             except:
                 try:
                     # We try the default property fo that material
-                    prop = solcore_mat.__getattr__(key) / conversion[key]
+                    prop = solcore_mat.__getattr__(key) / ps.conversion[key]
                     self.properties_list.insert(
-                        "", "end", text=key, values=(format(prop, ".4"), units[key])
+                        "", "end", text=key, values=(format(prop, ".4"), ps.units[key])
                     )
                 except:
                     # Or a default value.
-                    prop = default_layer_properties[key] / conversion[key]
+                    prop = ps.default_layer_properties[key] / ps.conversion[key]
                     current_item["options"][key] = prop
                     self.properties_list.insert(
                         "",
                         "end",
                         text=key,
-                        values=(format(prop, ".4"), units[key]),
+                        values=(format(prop, ".4"), ps.units[key]),
                         tags=("modified"),
                     )
 
     def get_properties_list(self, item_id):
-        """Return the properties that a layer needs to have. Which properties are relevant depend on where the layer is located, if its outside any juction, if the junction is a PDD one, a DA, etc.
+        """Return the properties that a layer needs to have.
+
+        Which properties are relevant depend on where the layer is located, if its
+        outside any juction, if the junction is a PDD one, a DA, etc.
 
         :param item_id: The id of the item we want the properties
         :return: The list of relevant properties
@@ -883,12 +880,12 @@ class SolarCellsTab(ttk.Frame):
         parent_id = self.solar_cell_list.parent(item_id)
         try:
             parent = self.model["Solar cell"][parent_id]
-            return properties_layers[parent["type"]]
+            return ps.properties_layers[parent["type"]]
         except KeyError:
             if "Layer" in item["type"]:
                 return []
             else:
-                return properties_junctions[item["type"]]
+                return ps.properties_junctions[item["type"]]
 
     def confirm_changes_to_layer(self, *args):
         """This command confirm the changes made to the layer, validating the values and updating the TreeView and the Model
@@ -940,7 +937,8 @@ class SolarCellsTab(ttk.Frame):
             item_id, text=name, values=["Layer", width, mat, options]
         )
 
-        # And the whole properties frame. Part of what is done here is redundant and can be improved a lot
+        # And the whole properties frame. Part of what is done here is redundant and can
+        # be improved a lot
         self.show_properties_frame()
 
     def update_composition_label(self, *args):
@@ -959,11 +957,13 @@ class SolarCellsTab(ttk.Frame):
             self.composition_label_var.set("-")
 
     def get_solar_cell_structure(self):
-        """Gets the structure of the solar cell from the tree view (order of the layers, junctions and layers within each junction).
+        """Gets the structure of the solar cell from the tree view (order of the layers,
+        junctions and layers within each junction).
 
         :return:
         """
-        # First we get the structure of the solar cell, just using the labels. The first label in each list is the
+        # First we get the structure of the solar cell, just using the labels.
+        # The first label in each list is the
         # parent
         structure = []
         children = self.solar_cell_list.get_children()
@@ -1025,7 +1025,8 @@ class SolarCellsTab(ttk.Frame):
             return
 
         try:
-            # And now we populate the list with the loaded elements: junctions, tunnel junctions or layers
+            # And now we populate the list with the loaded elements: junctions, tunnel
+            # junctions or layers
             for c in self.model["Solar cell"]["structure"]:
                 item_id = c[0]
                 current_item = self.model["Solar cell"][item_id]
@@ -1071,7 +1072,8 @@ class SolarCellsTab(ttk.Frame):
                     )
         except KeyError:
             print(
-                "The model cannot be loaded. There is missing information or the format is not correct."
+                "The model cannot be loaded. There is missing information or the format"
+                "is not correct."
             )
 
     def run(self, *args):
@@ -1081,7 +1083,8 @@ class SolarCellsTab(ttk.Frame):
         :return:
         """
 
-        # We get the solar cell structure and if there is no structure, we do nothing else.
+        # We get the solar cell structure and if there is no structure, we do nothing
+        # else.
         self.get_solar_cell_structure()
         if len(self.model["Solar cell"]["structure"]) == 0:
             return
@@ -1094,7 +1097,8 @@ class SolarCellsTab(ttk.Frame):
         output = run_solar_cell_model(task, self.model)
 
         # Get output
-        # And now we save the data to individual files for IV, QE and bandstructure (only for PDD junctions)
+        # And now we save the data to individual files for IV, QE and bandstructure
+        # (only for PDD junctions)
         # And plot the results
         # And show the calculated outputs, if any
         root_filename = os.path.join(
@@ -1203,7 +1207,8 @@ class SolarCellsTab(ttk.Frame):
             self.show_plot_outputs(self.plot_outputs[id]["object"])
 
     def open_plot(self, *args) -> None:
-        """Opens the selected plot. If it was already oppened, closes it - actually just destroys the figure - and opens it again.
+        """Opens the selected plot. If it was already oppened, closes it - actually just
+        destroys the figure - and opens it again.
 
         :return: None
         """
@@ -1285,10 +1290,6 @@ def raise_window(figname=None):
 
     This function will only work with a Tk graphics backend.  It assumes you
     have already executed the command 'import matplotlib.pyplot as plt'.
-
-    Function taken from:
-    http://physicalmodelingwithpython.blogspot.com/2015/07/raising-figure-window-to-foreground.html
-
     """
 
     if figname:

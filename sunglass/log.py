@@ -1,11 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
 
+
 class LogTab(ttk.Frame):
-    """ This tab is used to print the output log of any running process
-    """
+    """This tab is used to print the output log of any running process"""
+
     def __init__(self, parent):
-        """ Constructor of the class
+        """Constructor of the class
 
         :param parent: The notebook that serves as parent of this tab
         """
@@ -21,4 +22,4 @@ class LogTab(ttk.Frame):
         self.text.configure(yscrollcommand=scroll.set)
         scroll.grid(column=99, row=0, sticky=(tk.NS))
 
-        self.text.tag_configure('red', foreground='red')
+        self.text.tag_configure("red", foreground="red")

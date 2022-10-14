@@ -2,25 +2,15 @@ import matplotlib
 
 matplotlib.use("TkAgg")
 
-import tkinter as tk
-from tkinter import ttk
+import datetime  # noqa
+import sys  # noqa
+import tkinter as tk  # noqa
+from tkinter import ttk  # noqa
 
-
-# import numpy as np
-import sys
-import datetime
-
-# import os
-# from datetime import datetime
-
-
-# from tkinter import filedialog, messagebox
-# from tkinter import font
-
-from sunglass.materials import MaterialsTab
-from sunglass.solar_cells import SolarCellsTab
-from sunglass.log import LogTab
-from sunglass.spectrum import SpectrumTab
+from sunglass.log import LogTab  # noqa
+from sunglass.materials import MaterialsTab  # noqa
+from sunglass.solar_cells import SolarCellsTab  # noqa
+from sunglass.spectrum import SpectrumTab  # noqa
 
 
 class Sunglass(tk.Tk):
