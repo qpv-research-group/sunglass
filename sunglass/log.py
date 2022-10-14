@@ -3,10 +3,10 @@ from tkinter import ttk
 
 
 class LogTab(ttk.Frame):
-    """This tab is used to print the output log of any running process"""
+    """This tab is used to print the output log of any running process."""
 
     def __init__(self, parent):
-        """Constructor of the class
+        """Constructor of the class.
 
         :param parent: The notebook that serves as parent of this tab
         """

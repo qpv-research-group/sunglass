@@ -47,7 +47,8 @@ def save_qe_data(root_filename, output):
 
     for j in range(len(output)):
 
-        # All layers and junctions have defined a fraction of absorbed light, except some TJ and 2D kind of
+        # All layers and junctions have defined a fraction of absorbed light, except
+        # some TJ and 2D kind of
         # junctions. We try to get that, first.
         try:
             new_key = "A_{}".format(j)
@@ -58,7 +59,8 @@ def save_qe_data(root_filename, output):
         except KeyError:
             print("WARNING: Element {} has no absorption defined.".format(j))
 
-        # We try to get the QE. If we have a single layer or TJ, this will fail as they don't have QE
+        # We try to get the QE. If we have a single layer or TJ, this will fail as they
+        # don't have QE
         try:
             for k in output[j].qe.keys():
                 if k != "WL":
@@ -83,20 +85,22 @@ def save_bandstructure_data(root_filename, output, task):
 
     for j in output.junction_indices:
 
-        # Only junctions have information on bandstructure, and not all the models, so we take that into account.
+        # Only junctions have information on bandstructure, and not all the models, so
+        # we take that into account.
         try:
             data = output[j].__dict__[tsk]["Bandstructure"]
             x = data["x"]
 
             if task == "equilibrium":
-                # The properties and the bandstructure are mapped at different positions, so we interpolate
+                # The properties and the bandstructure are mapped at different
+                # positions, so we interpolate
                 for p in output[j].__dict__[tsk]["Properties"].keys():
                     old_x = output[j].__dict__[tsk]["Properties"]["x"]
                     if p != "x":
                         data[p] = np.interp(
                             x, old_x, output[j].__dict__[tsk]["Properties"][p]
                         )
-        except KeyError as err:
+        except KeyError:
             print("WARNING: Junction {} has no bandstructure information.".format(j))
             continue
 

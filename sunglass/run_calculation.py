@@ -6,7 +6,7 @@ from solcore.solar_cell import SolarCell
 from solcore.solar_cell_solver import solar_cell_solver
 from solcore.structure import Junction, Layer, TunnelJunction
 
-from .properties_and_settings import *
+from . import properties_and_settings as ps
 
 
 def create_reflectivity(filename):
@@ -39,7 +39,8 @@ def run_solar_cell_model(task, model):
 
     try:
         for p in options:
-            # For the options that should be arrays, we create the arrays. The wavelength need ot be converted to meters
+            # For the options that should be arrays, we create the arrays. The
+            # wavelength need ot be converted to meters
             if p in array_based_options:
                 c = options[p].split(", ")
                 ini = float(c[0])
@@ -73,7 +74,8 @@ def run_solar_cell_model(task, model):
             layer_properties = {}
             width = current_element["width"] * 1e-9
 
-            # Set the composition and get the properties, converting them to the correct units
+            # Set the composition and get the properties, converting them to the correct
+            # units
             for key in current_element["options"]:
                 if key in ["element", "x"]:
                     layer_properties[
@@ -81,7 +83,7 @@ def run_solar_cell_model(task, model):
                     ] = current_element["options"]["x"]
                 else:
                     layer_properties[key] = (
-                        current_element["options"][key] * conversion[key]
+                        current_element["options"][key] * ps.conversion[key]
                     )
 
             all_materials.append(
@@ -95,8 +97,8 @@ def run_solar_cell_model(task, model):
 
         # Unless it is an individual layer, we have junctions
         properties = {}
-        for p in properties_junctions[current_element["type"]]:
-            properties[p] = default_junction_properties[p]
+        for p in ps.properties_junctions[current_element["type"]]:
+            properties[p] = ps.default_junction_properties[p]
 
         properties.update(**current_element["options"])
         kind = current_element["type"].split("-")[-1]
@@ -110,13 +112,14 @@ def run_solar_cell_model(task, model):
             )
 
         # Now we add the layers, if any
-        for l in i[1:]:
-            current_child = sc_data[l]
+        for layer in i[1:]:
+            current_child = sc_data[layer]
 
             width = current_child["width"] * 1e-9
             layer_properties = {}
 
-            # Set the composition and get the properties, converting them to the correct units
+            # Set the composition and get the properties, converting them to the correct
+            # units
             for key in current_child["options"]:
                 if key in ["element", "x"]:
                     layer_properties[
@@ -124,7 +127,7 @@ def run_solar_cell_model(task, model):
                     ] = current_child["options"]["x"]
                 else:
                     layer_properties[key] = (
-                        current_child["options"][key] * conversion[key]
+                        current_child["options"][key] * ps.conversion[key]
                     )
 
             all_materials.append(

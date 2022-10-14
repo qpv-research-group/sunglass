@@ -5,10 +5,11 @@ import solcore
 
 
 class MaterialsTab(ttk.Frame):
-    """Class that contains all widgets related to the managing of Solcore materials"""
+    """Class that contains all widgets related to the managing of Solcore
+    materials."""
 
     def __init__(self, parent, master):
-        """Constructor of the class
+        """Constructor of the class.
 
         :param parent: The notebook that serves as parent of this tab
         """

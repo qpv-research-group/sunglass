@@ -16,11 +16,12 @@ from sunglass.spectrum import SpectrumTab  # noqa
 class Sunglass(tk.Tk):
     """This class creates the main Sunglass window.
 
-    This is the function one that will serve as entry point for any other tool
+    This is the function one that will serve as entry point for any
+    other tool
     """
 
     def __init__(self):
-        """Constructor of the class
+        """Constructor of the class.
 
         :return: None
         """
@@ -53,7 +54,7 @@ class Sunglass(tk.Tk):
                 print("Caught Scroll Error")
 
     def __quit(self) -> None:
-        """Quit the program in a safe way
+        """Quit the program in a safe way.
 
         Return:
             None
@@ -69,7 +70,8 @@ class Sunglass(tk.Tk):
         self.quit()  # quits the program
 
     def create_global_variables(self):
-        """Creates the global variables needed in several places of the program
+        """Creates the global variables needed in several places of the
+        program.
 
         :return: None
         """

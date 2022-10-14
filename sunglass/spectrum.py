@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from typing import Callable, Dict, Union
+from typing import Callable, Dict, Tuple
 
 import numpy as np
 from matplotlib import axes, figure
@@ -11,10 +11,10 @@ from solcore.light_source.light_source import REGISTERED_CONVERTERS, LightSource
 
 
 class SpectrumTab(ttk.Frame):
-    """This tab is used to create illumination spectra"""
+    """This tab is used to create illumination spectra."""
 
     def __init__(self, parent: ttk.Notebook) -> None:
-        """Constructor of the class
+        """Constructor of the class.
 
         :param parent: The notebook that serves as parent of this tab
         """
@@ -39,10 +39,12 @@ class SpectrumTab(ttk.Frame):
         self.x_max.trace_add("write", self.update_plot)
         self.x_points.trace_add("write", self.update_plot)
 
-        # Next we create the variable that will hold the currently calculated LightSource object
+        # Next we create the variable that will hold the currently calculated
+        # LightSource object
         self.light_source = None
 
-        # We add two frames, one for the controls on the left and another one for the plot on the right
+        # We add two frames, one for the controls on the left and another one for the
+        # plot on the right
         self.fig, self.axes = self.create_plot_area()
         self.control_frame = self.create_control_area()
 
@@ -53,7 +55,7 @@ class SpectrumTab(ttk.Frame):
         self.update_plot()
 
     def create_plot_area(self) -> (figure.Figure, axes.Axes):
-        """Creates the plot area in which to show the spectra
+        """Creates the plot area in which to show the spectra.
 
         :return: The figure and axes
         """
@@ -130,7 +132,8 @@ class SpectrumTab(ttk.Frame):
         return control_frame
 
     def update_plot(self, *args) -> None:
-        """Updates the plot whenever one of the settings changes and also update the LightSource variable
+        """Updates the plot whenever one of the settings changes and also
+        update the LightSource variable.
 
         :return: None
         """
@@ -151,7 +154,7 @@ class SpectrumTab(ttk.Frame):
         self.fig.canvas.draw_idle()
 
     def update_units_labels_and_values(self) -> None:
-        """Updates the x units labels and fields
+        """Updates the x units labels and fields.
 
         :return: None
         """
@@ -204,7 +207,8 @@ class SpectrumTab(ttk.Frame):
             new_min = factor * old_min
             new_max = factor * old_max
 
-        # Now we have to check if maximum and minimum are in the correct order, reversing them, otherwise
+        # Now we have to check if maximum and minimum are in the correct order,
+        # reversing them, otherwise
         if new_min > new_max:
             new_min, new_max = new_max, new_min
 
@@ -212,7 +216,7 @@ class SpectrumTab(ttk.Frame):
         self.x_max.set(format(new_max, ".4"))
 
     def calculate_light_source(self) -> LightSource:
-        """Calculate the lightsource based on the chosen options
+        """Calculate the lightsource based on the chosen options.
 
         :return: None
         """
@@ -222,7 +226,8 @@ class SpectrumTab(ttk.Frame):
             x_max = self.x_max.get()
             x_points = self.x_points.get()
         except Exception:
-            # If any of the parameters causes problems, we return the current light source
+            # If any of the parameters causes problems, we return the current light
+            # source
             return self.light_source
 
         # Now we retrieve the options
@@ -239,8 +244,8 @@ class SpectrumTab(ttk.Frame):
 
         return light_source
 
-    def get_axes_labels(self) -> (str, str):
-        """Gets the correct labels for the axis
+    def get_axes_labels(self) -> Tuple[str, str]:
+        """Gets the correct labels for the axis.
 
         :return: A tuple with the x and y labels
         """
@@ -265,7 +270,7 @@ class SpectrumTab(ttk.Frame):
 
 
 class StandardSpectrum(ttk.LabelFrame):
-    """ """
+    """"""
 
     def __init__(
         self, parent: ttk.Frame, row: int, update: Callable[[], None], col: int = 0
@@ -291,7 +296,7 @@ class StandardSpectrum(ttk.LabelFrame):
         source_version_box.bind("<<ComboboxSelected>>", update)
 
     def get_options(self) -> Dict:
-        """Returns a dictionary with the options of this type of spectrum
+        """Returns a dictionary with the options of this type of spectrum.
 
         :return: A ditcionary with the options
         """

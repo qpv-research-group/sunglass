@@ -16,10 +16,11 @@ from .save_data import save_bandstructure_data, save_iv_data, save_qe_data
 
 
 class SolarCellsTab(ttk.Frame):
-    """Class that contains all widgets related to the creation and simulation of solar cells"""
+    """Contains all widgets related to the creation and simulation of solar
+    cells."""
 
     def __init__(self, parent, master):
-        """Constructor of the class
+        """Constructor of the class.
 
         :param parent: The notebook that serves as parent of this tab
         """
@@ -90,7 +91,7 @@ class SolarCellsTab(ttk.Frame):
         self.solar_cell_list.column("options", minwidth=0, width=200, stretch=tk.YES)
 
     def unselect_item(self, *args):
-        """Un-select the item from the list
+        """Un-select the item from the list.
 
         :param args:
         :return:
@@ -187,7 +188,7 @@ class SolarCellsTab(ttk.Frame):
         run.grid(column=0, row=5, sticky=tk.NSEW)
 
     def move_up(self):
-        """Moves up an item
+        """Moves up an item.
 
         :return: None
         """
@@ -199,7 +200,7 @@ class SolarCellsTab(ttk.Frame):
         )
 
     def move_down(self):
-        """Moves down an item
+        """Moves down an item.
 
         :return: None
         """
@@ -212,7 +213,9 @@ class SolarCellsTab(ttk.Frame):
         )
 
     def delete_line(self):
-        """Deletes an item and moves the focus to the previous one within the same parent. When there are no more previous items, the command is ignored.
+        """Deletes an item and moves the focus to the previous one within the
+        same parent. When there are no more previous items, the command is
+        ignored.
 
         :return: None
         """
@@ -222,11 +225,13 @@ class SolarCellsTab(ttk.Frame):
             self.solar_cell_list.delete(item_id)
             self.model["Solar cell"].pop(item_id)
             self.solar_cell_list.focus(other_item)
-        except:
+        except Exception:
             return
 
     def duplicate(self):
-        """Duplicates an item. Currently, it only works well for single layers as it does not duplicate the contents of a junction or tunnel junction, if present.
+        """Duplicates an item. Currently, it only works well for single layers
+        as it does not duplicate the contents of a junction or tunnel junction,
+        if present.
 
         :return: None
         """
@@ -250,7 +255,8 @@ class SolarCellsTab(ttk.Frame):
             self.model["Solar cell"][new_child] = copy.copy(self.model["Solar cell"][c])
 
     def add_layer(self):
-        """Adds a layer to the structure, either in the root or within a junction. The layer is also added to the model dictionary
+        """Adds a layer to the structure, either in the root or within a
+        junction. The layer is also added to the model dictionary.
 
         :return: None
         """
@@ -268,7 +274,7 @@ class SolarCellsTab(ttk.Frame):
             }
 
     def add_junction(self):
-        """Adds a junction to the structure
+        """Adds a junction to the structure.
 
         :return: None
         """
@@ -288,7 +294,7 @@ class SolarCellsTab(ttk.Frame):
         }
 
     def clear_solar_cell(self, confirmed=False):
-        """Delets all elements in the slar cell
+        """Delets all elements in the slar cell.
 
         :return:
         """
@@ -358,7 +364,7 @@ class SolarCellsTab(ttk.Frame):
         callback()
 
     def create_solar_cell_properties_frame(self, *args):
-        """Creates the frame that contain the general solar cell properties
+        """Creates the frame that contain the general solar cell properties.
 
         Such as name, substrate, front relfection...
 
@@ -460,7 +466,7 @@ class SolarCellsTab(ttk.Frame):
         rs.grid(column=1, row=6, sticky=tk.NSEW)
 
     def choose_reflectivity(self, *args):
-        """Allows to choose the reflectivity of the solar cell
+        """Allows to choose the reflectivity of the solar cell.
 
         :param args:
         :return:
@@ -471,13 +477,14 @@ class SolarCellsTab(ttk.Frame):
             # A pop up dialog allows to choose the relfectivity
             filename = filedialog.askopenfilename(initialdir=self.current_location)
 
-            if filename is not "":
+            if filename != "":
                 self.reflectivity_var.set(filename)
             else:
                 self.reflectivity_check.set(0)
 
     def update_substrate_composition_label(self, *args):
-        """Updates the composition label of the substrate with the relevant material name
+        """Updates the composition label of the substrate with the relevant
+        material name.
 
         :param args:
         :return:
@@ -492,7 +499,8 @@ class SolarCellsTab(ttk.Frame):
             self.subs_composition_label_var.set("-")
 
     def confirm_changes_to_solar_cell(self, *args):
-        """Confirm all changes done to the solar cell properties by storing them in the model
+        """Confirm all changes done to the solar cell properties by storing
+        them in the model.
 
         :param args:
         :return:
@@ -509,7 +517,7 @@ class SolarCellsTab(ttk.Frame):
             self.model["Solar cell"]["composition"] = self.subs_composition_var.get()
 
     def create_junction_properties_frame(self, *args):
-        """Creates the frame that contain the junction properties
+        """Creates the frame that contain the junction properties.
 
         :param args:
         :return:
@@ -591,7 +599,8 @@ class SolarCellsTab(ttk.Frame):
         # Get the new set of parameters
         prop_list = self.get_properties_list(item_id)
 
-        # We scan the list of required properties and load the overwritten ones of the default ones
+        # We scan the list of required properties and load the overwritten ones of the
+        # default ones
         for key in prop_list:
             try:
                 prop = self.model["Solar cell"][item_id]["options"][key]
@@ -602,7 +611,7 @@ class SolarCellsTab(ttk.Frame):
                     values=(format(prop, ".4"), ps.units[key]),
                     tags=("modified"),
                 )
-            except:
+            except Exception:
                 prop = ps.default_junction_properties[key] / ps.conversion[key]
 
                 self.junction_properties_list.insert(
@@ -749,8 +758,8 @@ class SolarCellsTab(ttk.Frame):
         self.junction_name_var.set(current_item["name"])
         self.junction_type_var.set(current_item["type"])
 
-        # Finally, we populate the properties TreeView with the values for this junction,
-        # starting by eliminating the current ones
+        # Finally, we populate the properties TreeView with the values for this
+        # junction, starting by eliminating the current ones
         old_list = self.junction_properties_list.get_children()
         if len(old_list) > 0:
             self.junction_properties_list.delete(*old_list)
@@ -758,7 +767,8 @@ class SolarCellsTab(ttk.Frame):
         # Get the new set of parameters
         prop_list = self.get_properties_list(item_id)
 
-        # We scan the list of required properties and load the overwritten ones of the default ones
+        # We scan the list of required properties and load the overwritten ones of the
+        # default ones
         for key in prop_list:
             try:
                 prop = current_item["options"][key]
@@ -769,7 +779,7 @@ class SolarCellsTab(ttk.Frame):
                     values=(format(prop, ".4"), ps.units[key]),
                     tags=("modified"),
                 )
-            except:
+            except Exception:
                 prop = ps.default_junction_properties[key] / ps.conversion[key]
 
                 self.junction_properties_list.insert(
@@ -799,7 +809,7 @@ class SolarCellsTab(ttk.Frame):
         if sum(1 for c in current_item["material"] if c.isupper()) > 2:
             try:
                 x_label = current_item["options"]["element"]
-            except:
+            except KeyError:
                 x_label = solcore.ParameterSystem().database.get(
                     current_item["material"], "x"
                 )
@@ -838,12 +848,14 @@ class SolarCellsTab(ttk.Frame):
             else 0.0
         )
 
-        # Most properties are the default ones defined for that material, so we need to open that material
+        # Most properties are the default ones defined for that material, so we need to
+        # open that material
         solcore_mat = solcore.material(current_item["material"])(
             **{"T": self.model["Global"]["T"], x_label: x, "Na": Na, "Nd": Nd}
         )
 
-        # We scan the list of required properties and load the overwritten ones of the default ones
+        # We scan the list of required properties and load the overwritten ones of the
+        # default ones
         for key in prop_list:
             try:
                 prop = current_item["options"][key]
@@ -854,14 +866,14 @@ class SolarCellsTab(ttk.Frame):
                     values=(format(prop, ".4"), ps.units[key]),
                     tags=("modified"),
                 )
-            except:
+            except KeyError:
                 try:
                     # We try the default property fo that material
                     prop = solcore_mat.__getattr__(key) / ps.conversion[key]
                     self.properties_list.insert(
                         "", "end", text=key, values=(format(prop, ".4"), ps.units[key])
                     )
-                except:
+                except AttributeError:
                     # Or a default value.
                     prop = ps.default_layer_properties[key] / ps.conversion[key]
                     current_item["options"][key] = prop
@@ -894,7 +906,8 @@ class SolarCellsTab(ttk.Frame):
                 return ps.properties_junctions[item["type"]]
 
     def confirm_changes_to_layer(self, *args):
-        """This command confirm the changes made to the layer, validating the values and updating the TreeView and the Model
+        """This command confirm the changes made to the layer, validating the
+        values and updating the TreeView and the Model.
 
         :param args: Dummy
         :return: None
@@ -929,7 +942,7 @@ class SolarCellsTab(ttk.Frame):
             try:
                 self.model["Solar cell"][item_id]["options"].pop("x")
                 self.model["Solar cell"][item_id]["options"].pop("element")
-            except:
+            except KeyError:
                 pass
 
         options = ""
@@ -948,7 +961,7 @@ class SolarCellsTab(ttk.Frame):
         self.show_properties_frame()
 
     def update_composition_label(self, *args):
-        """Updates the composition label with the relevant material name
+        """Updates the composition label with the relevant material name.
 
         :param args:
         :return:
@@ -963,8 +976,8 @@ class SolarCellsTab(ttk.Frame):
             self.composition_label_var.set("-")
 
     def get_solar_cell_structure(self):
-        """Gets the structure of the solar cell from the tree view (order of the layers,
-        junctions and layers within each junction).
+        """Gets the structure of the solar cell from the tree view (order of
+        the layers, junctions and layers within each junction).
 
         :return:
         """
@@ -983,7 +996,7 @@ class SolarCellsTab(ttk.Frame):
         self.confirm_changes_to_solar_cell()
 
     def save_model(self):
-        """Saves the solar cell model to a Yaml-formatted file
+        """Saves the solar cell model to a Yaml-formatted file.
 
         :return: None
         """
@@ -1001,11 +1014,11 @@ class SolarCellsTab(ttk.Frame):
 
             self.current_location, self.current_filename = os.path.split(filename)
             self.wd_label_var.set(self.current_location)
-        except:
+        except Exception:
             return 1
 
     def load_model(self):
-        """Loads a solar cell model previously saved in a Yalm-formatted file
+        """Loads a solar cell model previously saved in a Yalm-formatted file.
 
         :return: None
         """
@@ -1027,7 +1040,7 @@ class SolarCellsTab(ttk.Frame):
             self.current_location, self.current_filename = os.path.split(filename)
             self.wd_label_var.set(self.current_location)
             self.refresh_plots_list()
-        except:
+        except Exception:
             return
 
         try:
@@ -1083,7 +1096,8 @@ class SolarCellsTab(ttk.Frame):
             )
 
     def run(self, *args):
-        """Runs the selected calculation, starting by saving the solar cell model
+        """Runs the selected calculation, starting by saving the solar cell
+        model.
 
         :param args:
         :return:
@@ -1093,7 +1107,15 @@ class SolarCellsTab(ttk.Frame):
         # else.
         self.get_solar_cell_structure()
         if len(self.model["Solar cell"]["structure"]) == 0:
+            messagebox.showinfo(
+                "Information",
+                "There is no solar cell structure to calculate.",
+                icon="warning",
+            )
             return
+
+        # Now we save the model. That's a must
+        self.save_model()
 
         # Get problem to solve
         list_of_tasks = ["optics", "iv", "qe", "equilibrium", "short_circuit"]
@@ -1203,7 +1225,7 @@ class SolarCellsTab(ttk.Frame):
         self.plot_outputs_list.column("units", minwidth=0, width=100, stretch=tk.NO)
 
     def show_plot(self, *args) -> None:
-        """Brings to the foregrund a figure already plotted
+        """Brings to the foregrund a figure already plotted.
 
         :param args: dummy
         :return: None
@@ -1232,7 +1254,7 @@ class SolarCellsTab(ttk.Frame):
         self.show_plot_outputs(self.plot_outputs[id]["object"])
 
     def show_plot_outputs(self, plot):
-        """Gets the output calculations of the plot, if any, and shows them
+        """Gets the output calculations of the plot, if any, and shows them.
 
         :return:
         """
@@ -1279,7 +1301,7 @@ class SolarCellsTab(ttk.Frame):
             self.plot_outputs[id] = {"path": f, "object": None}
 
     def choose_directory(self) -> None:
-        """Opens a pop-up window to choose the working directory
+        """Opens a pop-up window to choose the working directory.
 
         :return: None
         """
@@ -1292,12 +1314,12 @@ class SolarCellsTab(ttk.Frame):
 
 
 def raise_window(figname=None):
-    """
-    Raise the plot window for Figure figname to the foreground.  If no argument
-    is given, raise the current figure.
+    """Raise the plot window for Figure figname to the foreground.  If no
+    argument is given, raise the current figure.
 
-    This function will only work with a Tk graphics backend.  It assumes you
-    have already executed the command 'import matplotlib.pyplot as plt'.
+    This function will only work with a Tk graphics backend.  It assumes
+    you have already executed the command 'import matplotlib.pyplot as
+    plt'.
     """
 
     if figname:

@@ -5,15 +5,13 @@ from typing import Optional, Union
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from matplotlib import gridspec
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure
 from solcore.constants import q
 from solcore.light_source import LightSource
 
 
 class IVPlot(object):
-    """Class that creates a plot of IV data, using a sensible formatting for the axis."""
+    """Class that creates a plot of IV data, using a sensible formatting for
+    the axis."""
 
     def __init__(
         self,
@@ -22,7 +20,7 @@ class IVPlot(object):
         spectrum: Optional[LightSource] = None,
         title: str = "",
     ) -> None:
-        """Creates the plot of IV data
+        """Creates the plot of IV data.
 
         :param data: Data to plot as a Pandas dataframe
         """
@@ -48,7 +46,8 @@ class IVPlot(object):
         plt.pause(0.001)
 
     def plot_dark_iv(self, data: pd.DataFrame) -> None:
-        """Plots the data assuming it is dark IV data, ie. absolute values for the current and log scale.
+        """Plots the data assuming it is dark IV data, ie. absolute values for
+        the current and log scale.
 
         :param data: Data to plot as a Pandas dataframe
         :return: None
@@ -88,10 +87,13 @@ class IVPlot(object):
         )
 
     def plot_light_iv(self, data: pd.DataFrame, spectrum: LightSource) -> None:
-        """Plots the data assuming it is light IV data, ie. moving shifting the region of interest to the first quadrant. It also calculates the solar cell parameters and the cell efficiency if a spectrum is given.
+        """Plots the data assuming it is light IV data, ie. moving shifting the
+        region of interest to the first quadrant. It also calculates the solar
+        cell parameters and the cell efficiency if a spectrum is given.
 
         :param data: Data to plot as a Pandas dataframe
-        :param spectrum: A LightSource object with the spectrum, needed to calculate the efficiency of the cell
+        :param spectrum: A LightSource object with the spectrum, needed to calculate the
+            efficiency of the cell
         :return: None
         """
 
@@ -120,7 +122,8 @@ class IVPlot(object):
 
         for name in data.columns.values:
 
-            # Plotting tunnel junctions IV. Actually, we need to review this as TJ have opposite polarity than
+            # Plotting tunnel junctions IV. Actually, we need to review this as TJ have
+            # opposite polarity than
             # normal J and therefore should look more like Rs.
             if "J_TJ" in name:
                 sj = 1 if np.interp(0, data["V"], data[name]) >= 0 else -1
@@ -169,7 +172,8 @@ class IVPlot(object):
 
 
 class QEPlot(object):
-    """Class that creates a plot of QE data, using a sensible formatting for the axis."""
+    """Class that creates a plot of QE data, using a sensible formatting for
+    the axis."""
 
     def __init__(
         self,
@@ -177,7 +181,7 @@ class QEPlot(object):
         spectrum: Optional[LightSource] = None,
         title: str = "",
     ) -> None:
-        """Creates the plot of QE data
+        """Creates the plot of QE data.
 
         :param data: Data to plot as a Pandas dataframe
         :param spectrum: Solar spectrum, only needed to calculate the currents
@@ -186,7 +190,8 @@ class QEPlot(object):
         self.fig, self.axes = plt.subplots(num=title, figsize=(8, 6))
         self.axes.margins(0)
 
-        # This will store the Jsc calculated for each junction if a solar spectrum is given
+        # This will store the Jsc calculated for each junction if a solar spectrum is
+        # given
         self.outputs = OrderedDict()
 
         self.plot_qe(data, spectrum)
@@ -201,10 +206,12 @@ class QEPlot(object):
         plt.pause(0.001)
 
     def plot_qe(self, data: pd.DataFrame, spectrum: LightSource) -> None:
-        """Plots the QE data and the different components, if any. If a spectrum is provided, it also calculates the Jsc of each junction
+        """Plots the QE data and the different components, if any. If a
+        spectrum is provided, it also calculates the Jsc of each junction.
 
         :param data: Data to plot as a Pandas dataframe
-        :param spectrum: A LightSource object with the spectrum, needed to calculate the Jsc of each junction
+        :param spectrum: A LightSource object with the spectrum, needed to calculate the
+            Jsc of each junction
         :return: None
         """
         wl = data["WL"] * 1e9  # Wavelength in nanometers
@@ -263,7 +270,8 @@ class QEPlot(object):
                 i += 1
                 losses_done = losses_done or i > 4
             elif "EQE" in name:
-                # And for the DA model we have contributions to the QE. We plot them with different markers.
+                # And for the DA model we have contributions to the QE. We plot them
+                # with different markers.
                 self.axes.plot(
                     wl,
                     data[name],
@@ -290,13 +298,16 @@ class QEPlot(object):
 
 
 class BandstructurePlot(object):
-    """Class that creates a plot of bandstructure data and other position-dependent parameters data, using a sensible formatting for the axis."""
+    """Class that creates a plot of bandstructure data and other position-
+    dependent parameters data, using a sensible formatting for the axis."""
 
     def __init__(self, data: pd.DataFrame, title: str = "") -> None:
-        """Launches the creation of the plots, which actually consist on several separated subplots. We create:
+        """Launches the creation of the plots, which actually consist on
+        several separated subplots. We create:
 
         - Energy plot: Ec, Ev, Efe, Efh
-        - Carrier density plot: Nc, Nv, Nd, Na, n, p, ni, rho  <-- Maybe a bit too much. Consider removing Nc, Nv
+        - Carrier density plot: Nc, Nv, Nd, Na, n, p, ni, rho  <-- Maybe a bit too much.
+          Consider removing Nc, Nv
         - G-R plot: G and the recombination mechanisms SRH, Rad and Aug
 
         :param data: Data to plot as a Pandas dataframe
@@ -385,7 +396,7 @@ class BandstructurePlot(object):
 
 
 def save_plot(plot: Union[IVPlot, QEPlot, BandstructurePlot], filename: str) -> None:
-    """Saves a plot as a pickle object
+    """Saves a plot as a pickle object.
 
     :param plot:
     :param filename:
@@ -398,7 +409,7 @@ def save_plot(plot: Union[IVPlot, QEPlot, BandstructurePlot], filename: str) -> 
 def load_plot(
     filename: str, plot: bool = False
 ) -> Union[IVPlot, QEPlot, BandstructurePlot]:
-    """Loads a plot from a pickle object
+    """Loads a plot from a pickle object.
 
     :param filename: The name of the file to load
     :param plot: whether the figure should be plotted or not. Default=False.
@@ -413,36 +424,3 @@ def load_plot(
         plt.pause(0.001)
 
     return out
-
-
-if __name__ == "__main__":
-    import os
-
-    # # df = pd.read_csv('DA_2J_IV_light.csv')
-    # df = pd.read_csv('DA_2J_IV_dark.csv')
-    #
-    # # sp = LightSource(source_type='standard', version='AM1.5g', x=df['WL'])
-    #
-    df = pd.read_csv(
-        os.path.join(os.path.expanduser("~"), "Desktop", "DA_2J_PDD_IV_light.csv")
-    )
-    my_fig = IVPlot(df, light=True, title="DA_2J_PDD_IV_light")
-    plt.show()
-
-    # df = pd.read_csv(os.path.join(os.path.expanduser('~'), 'Desktop','DA_2J_PDD_QE.csv'))
-    #
-    # sp = LightSource(source_type='standard', version='AM1.5g', x=df['WL'])
-    #
-    # my_fig = QEPlot(df, spectrum=sp, title='DA_2J_PDD_QE')
-    # plt.show()
-
-    # df = pd.read_csv(os.path.join(os.path.expanduser('~'), 'Desktop', 'DA_2J_PDD_equilibrium.csv'))
-    #
-    # my_fig = BandstructurePlot(df, title='DA_2J_PDD_equilibrium')
-    # plt.show()
-
-    # filename = 'DA_2J_PDD_short_circuit.csv'
-    # df = pd.read_csv(os.path.join(os.path.expanduser('~'), 'Desktop', filename))
-    #
-    # my_fig = BandstructurePlot(df, title=filename)
-    # plt.show()
