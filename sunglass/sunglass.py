@@ -14,7 +14,10 @@ from sunglass.spectrum import SpectrumTab  # noqa
 
 
 class Sunglass(tk.Tk):
-    """This class creates the main Sunglass window, the one that will serve as entry point for any other tool"""
+    """This class creates the main Sunglass window.
+
+    This is the function one that will serve as entry point for any other tool
+    """
 
     def __init__(self):
         """Constructor of the class
@@ -23,12 +26,13 @@ class Sunglass(tk.Tk):
         """
 
         tk.Tk.__init__(self)
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
 
         self.title("Sunglass")
-        self.protocol(
-            "WM_DELETE_WINDOW", self.__quit
-        )  # Used to force a "safe closing" of the program
-        # self.resizable(False, False)
+
+        # Used to force a "safe closing" of the program
+        self.protocol("WM_DELETE_WINDOW", self.__quit)
         self.option_add("*tearOff", False)  # Prevents tearing the menus
 
         # We create the global variables
@@ -39,8 +43,8 @@ class Sunglass(tk.Tk):
 
         # Finally, we initiate the main loop.
         # This is a hack found here: http://github.com/matplotlib/matplotlib/issues/9637
-        # to avoid a crashing that happens when combining certain versions of tcl (what's behind tkinter) and certain
-        # versions of python
+        # to avoid a crashing that happens when combining certain versions of tcl
+        # (what's behind tkinter) and certain versions of python
         while self.closed is False:
             try:
                 self.update_idletasks()
@@ -70,15 +74,18 @@ class Sunglass(tk.Tk):
         """
         self.closed = False
 
-    def create_gui(self):
-        """Creates the graphic components of the program, calling the relevant classes to add their bit (materials, solar cells, etc).
+    def create_gui(self) -> None:
+        """Creates the graphic components of the program.
 
-        :return: None
+        This calls the relevant classes to add their bit (materials, solar cells, etc).
+
+        Return:
+            None
         """
-
         masterframe = ttk.Frame(self)
         masterframe.grid(column=0, row=0, sticky=tk.NSEW)
-        masterframe.rowconfigure(99, weight=1)
+        masterframe.rowconfigure(0, weight=1)
+        masterframe.columnconfigure(0, weight=1)
 
         self.book = ttk.Notebook(masterframe)
         self.book.grid(column=0, row=0, sticky=tk.NSEW)
