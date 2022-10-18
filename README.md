@@ -25,10 +25,10 @@ python -m sunglass
 
 ## Develop Sunglass
 
-1. Install poetry following the instructions for your OS: <https://python-poetry.org/docs/>
-2. Clone this repository with `git clone` .
-3. Navigate to thee root folder and install sunglass with `poetry install`
-4. If you want PDD support in Solcore, re-install Solcore with that support:
+1. Install poetry following the instructions for your OS: <https://python-poetry.org/docs/>.
+2. Clone this repository with `git clone`.
+3. Navigate to thee root folder and install sunglass with `poetry install`.
+4. If you want PDD support in Solcore, re-install Solcore with that support.
 
 ```bash
 pip install --no-deps --force-reinstall --install-option="--with_pdd" solcore
