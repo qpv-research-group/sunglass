@@ -1,9 +1,7 @@
 # Sunglass
 
-*"What you need to look at Solcore!"*
-
 Sunglass is a simple - and not yet fully operational - graphical user interface for the
-solar cells and semiconductors modelling framework Solcore. 
+solar cells and semiconductors modelling framework [Solcore](https://www.solcore.solar/). 
 
 ## Using Sunglass
 
