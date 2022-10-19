@@ -17,6 +17,16 @@
         "maintenance",
         "code"
       ]
+    },
+    {
+      "login": "phoebe-p",
+      "name": "Phoebe Pearce",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25822065?v=4",
+      "profile": "https://www.qpvgroup.org/phoebe-pearce",
+      "contributions": [
+        "review",
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
