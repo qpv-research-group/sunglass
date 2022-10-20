@@ -6,9 +6,9 @@ from solcore.constants import q
 from solcore.material_data import calculate_mobility
 from solcore.solar_cell_solver import asc_options, pdd_options, rcwa_options
 
-# The default material is a GaAs at 298 K and provides a set of minimum properties
-# that are used if they are not available for the material of interest
-# and not alternative is given
+# The default material is a GaAs at 298 K and provides a set of minimum properties that
+# are used if they are notavailable for the material of interest and not alternative is
+# given.
 # Default values MUST BE in SI units
 DefaultMaterial = material("GaAs")(T=298)
 default_layer_properties = {
@@ -24,7 +24,7 @@ default_layer_properties = {
     "Nv": DefaultMaterial.Nv,  # m-3
     "electron_minority_lifetime": 3e-6,  # s
     "hole_minority_lifetime": 2.5e-7,  # s
-    "relative_permittivity": DefaultMaterial.relative_permittivity,  # rel to epsilon0
+    "relative_permittivity": DefaultMaterial.relative_permittivity,  # relative to eps0
     "electron_auger_recombination": 1e-42,  # m6 s-1,
     "hole_auger_recombination": 1e-42,  # m6 s-1
     "radiative_recombination": DefaultMaterial.radiative_recombination,  # m3 s-1
