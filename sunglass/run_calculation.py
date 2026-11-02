@@ -78,9 +78,9 @@ def run_solar_cell_model(task, model):
             # units
             for key in current_element["options"]:
                 if key in ["element", "x"]:
-                    layer_properties[
-                        current_element["options"]["element"]
-                    ] = current_element["options"]["x"]
+                    layer_properties[current_element["options"]["element"]] = (
+                        current_element["options"]["x"]
+                    )
                 else:
                     layer_properties[key] = (
                         current_element["options"][key] * ps.conversion[key]
@@ -122,9 +122,9 @@ def run_solar_cell_model(task, model):
             # units
             for key in current_child["options"]:
                 if key in ["element", "x"]:
-                    layer_properties[
-                        current_child["options"]["element"]
-                    ] = current_child["options"]["x"]
+                    layer_properties[current_child["options"]["element"]] = (
+                        current_child["options"]["x"]
+                    )
                 else:
                     layer_properties[key] = (
                         current_child["options"][key] * ps.conversion[key]
