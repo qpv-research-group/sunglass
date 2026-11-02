@@ -626,9 +626,9 @@ class SolarCellsTab(ttk.Frame):
         """
         item_id = self.solar_cell_list.focus()
 
-        junction_type = self.model["Solar cell"][item_id][
-            "name"
-        ] = self.junction_type_var.get()
+        junction_type = self.model["Solar cell"][item_id]["name"] = (
+            self.junction_type_var.get()
+        )
         name = self.model["Solar cell"][item_id]["name"] = self.junction_name_var.get()
 
         options = ""
